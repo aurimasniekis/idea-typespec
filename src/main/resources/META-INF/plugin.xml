@@ -1,0 +1,90 @@
+<idea-plugin>
+  <id>com.aurimasniekis.idea.typespec</id>
+  <name>TypeSpec Support</name>
+  <resource-bundle>messages.TypeSpecBundle</resource-bundle>
+  <vendor email="aurimas@niekis.lt">Aurimas Niekis</vendor>
+
+  <description><![CDATA[
+<h1>TypeSpec Support Plugin</h1>
+<p>
+  This plugin adds basic support for <strong>TypeSpec</strong> in WebStorm.
+  It integrates essential functionality to enhance development and workflow for TypeSpec-based projects.
+</p>
+
+<h2>Key Features</h2>
+<ul>
+  <li>Implements <strong>Language Server Protocol (LSP)</strong> to provide intelligent language support.</li>
+  <li>Uses <strong>TextMate-based syntax highlighting</strong> for clear and structured code visibility.</li>
+</ul>
+  ]]></description>
+
+  <depends>com.intellij.modules.ultimate</depends>
+  <depends>org.jetbrains.plugins.textmate</depends>
+  <depends>JavaScript</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType
+      name="typespec"
+      implementationClass="com.aurimasniekis.idea.typespec.filetype.TypeSpecFileType"
+      fieldName="INSTANCE"
+      language="TypeSpec"
+      extensions="tsp"
+    />
+
+    <lang.syntaxHighlighterFactory language="TypeSpec"
+      implementationClass="com.aurimasniekis.idea.typespec.syntax.highlighting.TypeSpecSyntaxHighlighterFactory"/>
+    <editorHighlighterProvider filetype="typespec"
+      implementationClass="com.aurimasniekis.idea.typespec.syntax.highlighting.TextMateEditorHighlighterProvider"/>
+
+    <lang.parserDefinition language="TypeSpec"
+      implementationClass="com.aurimasniekis.idea.typespec.psi.TypeSpecParserDefinition"/>
+
+    <typedHandler implementation="com.aurimasniekis.idea.typespec.editor.TypeSpecTypedHandler"/>
+    <backspaceHandlerDelegate
+      implementation="com.aurimasniekis.idea.typespec.editor.TypeSpecBackspaceHandler"/>
+    <multiLangCommenter
+      implementation="com.aurimasniekis.idea.typespec.editor.TypeSpecCommentProvider"/>
+    <lang.commenter language="TypeSpec"
+      implementationClass="com.aurimasniekis.idea.typespec.editor.TypeSpecCommentProvider"/>
+
+    <braceMatcher filetype="typespec"
+      implementationClass="com.aurimasniekis.idea.typespec.editor.TypeSpaceBraceMatcher"/>
+
+    <todoIndexer filetype="typespec"
+      implementationClass="com.intellij.psi.impl.cache.impl.todo.PlainTextTodoIndexer"/>
+    <idIndexer filetype="typespec"
+      implementationClass="com.intellij.psi.impl.cache.impl.id.PlainTextIdIndexer"/>
+
+    <indexPatternBuilder
+      implementation="com.aurimasniekis.idea.typespec.editor.TypeSpecPatternBuilder"/>
+
+    <spellchecker.support language="TypeSpec"
+      implementationClass="org.jetbrains.plugins.textmate.spellchecker.TextMateSpellingStrategy"/>
+
+<!--    Duplicates basic stuff with auto completions from LSP -->
+<!--    <completion.contributor id="TypeSpecCompletionContributor" language="TypeSpec"-->
+<!--      implementationClass="com.aurimasniekis.idea.typespec.editor.TypeSpecCompletionContributor"-->
+<!--      order="last"/>-->
+
+    <lineIndentProvider
+      implementation="com.aurimasniekis.idea.typespec.editor.TypeSpecLineIndentProvider"/>
+
+    <platform.lsp.serverSupportProvider
+      implementation="com.aurimasniekis.idea.typespec.ide.lsp.TypeSpecLspServerSupportProvider"/>
+
+    <spellchecker.dictionary.runtimeDictionaryProvider
+      implementation="com.aurimasniekis.idea.typespec.TypeSpecUserDictionaryProvider"/>
+
+    <dependencySupport coordinate="npm:@typespec/compiler" kind="javascript"
+      displayName="TypeSpec Compiler"/>
+
+    <projectConfigurable id="settings.typespec"
+      groupId="language"
+      instance="com.aurimasniekis.idea.typespec.ide.ui.TypeSpecSettingsConfigurable"
+      bundle="messages.TypeSpecBundle"
+      key="typespec.settings.configurable.title"
+      nonDefaultProject="true"
+    />
+
+  </extensions>
+</idea-plugin>
